@@ -1,0 +1,79 @@
+:> dotnet new webapi
+- To Create new Api project.
+
+:> dotnet tool install --global dotnet-ef --version 3.1.6
+- To install Entity Framework to visit this url https://www.nuget.org/packages/dotnet-ef/
+
+:>dotnet tool install --global dotnet-aspnet-codegenerator
+- To Install code generator.
+
+:> dotnet add package Microsoft.EntityFrameworkCore.Design
+:> dotnet add package Microsoft.EntityFrameworkCore.sqlserver.desgin
+:> dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+:> dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+:> dotnet add package Microsoft.EntityFrameworkCore.Tools
+
+	This are the necessary packages to instal work with Entity Framework, Sql Server and Code Generation Utility.
+	
+
+:> dotnet aspnet-codegenerator controller -name OrderController -async -api --readWriteActions -outDir Controllers
+	Used to create Controller inside the Controllers Folder (-outDir)
+
+:> dotnet ef dbcontext scaffold "Server=SISERVER17\SQL2016;Database=MagnaRJR20072020;user id=magnaapp;password=magna2012" 
+Microsoft.EntityFrameworkCore.SqlServer -o Models
+
+	Genrating Entity Framework Class using sql server connection.
+
+:> dotnet ef dbcontext scaffold "Server=SISERVER17\SQL2016;Database=MagnaRJR20072020;user id=magnaapp;password=magna2012" Microsoft.EntityFrameworkCore.SqlServer -o Models -t KTTU_ORDER_MASTER -t KTTU_ORDER_DETAILS -t KTTU_PAYMENT_DETAILS -f
+	Above is the command which we can use it for createing Entity Framework for the selected tables
+	Note: We cannot add Tables once they created dbcontext (exploring.)
+	
+:> dotnet-aspnet-codegenerator controller -name OrderMasterController -api -m DotNetCodeAPI.Models.KttuOrderMaster -dc MagnaRJR20072020Context -outDir Controllers
+
+	Generate Controller with Model, Connection string (Specify Model Name with Namespace.)
+	
+	
+Note:	
+	If you get the Bellow Error when u run the command dotne run
+	" crit: Microsoft.AspNetCore.Server.Kestrel[0]
+      Unable to start Kestrel.
+	  System.InvalidOperationException: Unable to configure HTTPS endpoint. No server certificate was specified, and the default developer certificate could not be found or is out of date.
+		To generate a developer certificate run 'dotnet dev-certs https'. To trust the certificate (Windows and macOS only) run 'dotnet dev-certs https --trust'."
+	
+	Use the bellow link to find solution.
+	https://www.niceonecode.com/Question/20641/Unable-to-configure-HTTPS-endpoint.-No-server-certificate-was-specified-and-the-default-developer-certif
+	
+	
+	Run the bellow commands to resolve it one by one
+	:> dotnet dev-certs https --clean
+	:> dotnet dev-certs https -t
+	:> dotnet dev-certs https --check
+	
+	
+Note: Incase if you get Dependency Injection related error when call the controller method you add the bellow line of code in Startup.cs File inside the Configure services method.
+
+			services.AddMvc();
+			// connection String
+            var connection = "Server=SISERVER17\\SQL2016;Database=MagnaRJR20072020;user id=magnaapp;password=magna2012";
+			//MagnaRJR20072020Context is ur context file and use the namespace of it.
+            services.AddDbContext<MagnaRJR20072020Context>(options => options.UseSqlServer(connection));
+
+
+
+Token Based Auth
+:> dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 3.1.7
+
+	This is to be install to get JWTBearer Token. with the bellow link.
+
+	https://www.blogofpi.com/token-based-authentication-in-asp-net-core/
+
+
+:> dotnet add package Newtonsoft.Json --version 12.0.3
+
+	To install Newtonsoft json.
+	
+:> dotnet publish  --framework netcoreapp3.1  --output "C:\inetpub\wwwroot\DotNetCoreProdigy"  --configuration Release
+
+	Publish our Project with Release Mode by specifying output directory.
+	
+:> To Deploy to IIS use bellow Tutorial link and remember need to install latest Windows Hosting Runtime for .net core
